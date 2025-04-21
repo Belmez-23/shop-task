@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\OrderRepository;
+use App\Repository\OrderLisyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: OrderRepository::class)]
-class Order
+#[ORM\Entity(repositoryClass: OrderLisyRepository::class)]
+class OrderList
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -34,7 +34,7 @@ class Order
     /**
      * @var Collection<int, OrderGoodsList>
      */
-    #[ORM\OneToMany(targetEntity: OrderGoodsList::class, mappedBy: 'order', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: OrderGoodsList::class, mappedBy: 'order', cascade: ['persist'], orphanRemoval: true)]
     private Collection $goodsList;
 
     public function __construct()
@@ -48,29 +48,29 @@ class Order
     }
 
     /**
-     * @return Collection<int, Good>
+     * @return Collection<int, OrderGoodsList>
      */
     public function getGoods(): Collection
     {
-        return $this->goods;
+        return $this->goodsList;
     }
 
-    public function addGood(Good $good): static
+    public function addGoods(OrderGoodsList $good): static
     {
-        if (!$this->goods->contains($good)) {
-            $this->goods->add($good);
-            $good->setOneToOne($this);
+        if (!$this->goodsList->contains($good)) {
+            $this->goodsList->add($good);
+            $good->setOrder($this);
         }
 
         return $this;
     }
 
-    public function removeGood(Good $good): static
+    public function removeGoods(OrderGoodsList $good): static
     {
-        if ($this->goods->removeElement($good)) {
+        if ($this->goodsList->removeElement($good)) {
             // set the owning side to null (unless already changed)
-            if ($good->getOneToOne() === $this) {
-                $good->setOneToOne(null);
+            if ($good->getOrder() === $this) {
+                $good->setOrder(null);
             }
         }
 
@@ -94,9 +94,9 @@ class Order
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(): static
     {
-        $this->createdAt = $createdAt;
+        $this->createdAt = new \DateTimeImmutable();
 
         return $this;
     }

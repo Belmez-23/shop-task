@@ -24,7 +24,7 @@ final class Version20250421144044 extends AbstractMigration
             CREATE TABLE good (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(255) NOT NULL, price DOUBLE PRECISION NOT NULL, created_at DATETIME NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE TABLE `order` (id INT AUTO_INCREMENT NOT NULL, amount DOUBLE PRECISION NOT NULL, created_at DATETIME NOT NULL, paid_at DATETIME DEFAULT NULL, refunded_at DATETIME DEFAULT NULL, user_id INT NOT NULL, INDEX IDX_F5299398A76ED395 (user_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4
+            CREATE TABLE order_list (id INT AUTO_INCREMENT NOT NULL, amount DOUBLE PRECISION NOT NULL, created_at DATETIME NOT NULL, paid_at DATETIME DEFAULT NULL, refunded_at DATETIME DEFAULT NULL, user_id INT NOT NULL, INDEX IDX_F5299398A76ED395 (user_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4
         SQL);
         $this->addSql(<<<'SQL'
             CREATE TABLE order_goods_list (id INT AUTO_INCREMENT NOT NULL, amount DOUBLE PRECISION NOT NULL, good_id INT NOT NULL, order_id INT NOT NULL, INDEX IDX_C4FA1ECF1CF98C70 (good_id), INDEX IDX_C4FA1ECF8D9F6D38 (order_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4
@@ -33,13 +33,13 @@ final class Version20250421144044 extends AbstractMigration
             CREATE TABLE user (id INT AUTO_INCREMENT NOT NULL, first_name VARCHAR(255) NOT NULL, last_name VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE `order` ADD CONSTRAINT FK_F5299398A76ED395 FOREIGN KEY (user_id) REFERENCES user (id)
+            ALTER TABLE order_list ADD CONSTRAINT FK_F5299398A76ED395 FOREIGN KEY (user_id) REFERENCES user (id)
         SQL);
         $this->addSql(<<<'SQL'
             ALTER TABLE order_goods_list ADD CONSTRAINT FK_C4FA1ECF1CF98C70 FOREIGN KEY (good_id) REFERENCES good (id)
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE order_goods_list ADD CONSTRAINT FK_C4FA1ECF8D9F6D38 FOREIGN KEY (order_id) REFERENCES `order` (id)
+            ALTER TABLE order_goods_list ADD CONSTRAINT FK_C4FA1ECF8D9F6D38 FOREIGN KEY (order_id) REFERENCES order_list (id)
         SQL);
     }
 
@@ -47,7 +47,7 @@ final class Version20250421144044 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            ALTER TABLE `order` DROP FOREIGN KEY FK_F5299398A76ED395
+            ALTER TABLE order_list DROP FOREIGN KEY FK_F5299398A76ED395
         SQL);
         $this->addSql(<<<'SQL'
             ALTER TABLE order_goods_list DROP FOREIGN KEY FK_C4FA1ECF1CF98C70
@@ -59,7 +59,7 @@ final class Version20250421144044 extends AbstractMigration
             DROP TABLE good
         SQL);
         $this->addSql(<<<'SQL'
-            DROP TABLE `order`
+            DROP TABLE order_list
         SQL);
         $this->addSql(<<<'SQL'
             DROP TABLE order_goods_list

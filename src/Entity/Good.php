@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: GoodRepository::class)]
+#ORM\HasLifecycleCallbacks]
 class Good
 {
     #[ORM\Id]
@@ -22,6 +23,9 @@ class Good
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
+
+    #[ORM\Column]
+    private ?int $count = null;
 
     public function getId(): ?int
     {
@@ -57,9 +61,21 @@ class Good
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(): static
     {
-        $this->createdAt = $createdAt;
+        $this->createdAt = new \DateTime();
+
+        return $this;
+    }
+
+    public function getCount(): ?int
+    {
+        return $this->count;
+    }
+
+    public function setCount(int $count): static
+    {
+        $this->count = $count;
 
         return $this;
     }
