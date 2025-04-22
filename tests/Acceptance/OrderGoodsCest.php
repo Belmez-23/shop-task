@@ -36,6 +36,8 @@ final class OrderGoodsCest
                 ],
             ],
         ]));
+
+        // ✔ OrderGoodsCest: Order one product (0.02s)
     }
 
     public function orderMultipleProducts(AcceptanceTester $I): void
@@ -44,16 +46,16 @@ final class OrderGoodsCest
             'userId' => 1,
             'goods' => [
                 [
-                    'id' => 1,
-                    'count' => 3,
+                    'id' => $this->faker->numberBetween(1, 10),
+                    'count' => $this->faker->numberBetween(1, 10),
                 ],
                 [
-                    'id' => 2,
-                    'count' => 2,
+                    'id' => $this->faker->numberBetween(1, 10),
+                    'count' => $this->faker->numberBetween(1, 10),
                 ],
                 [
-                    'id' => 3,
-                    'count' => 1,
+                    'id' => $this->faker->numberBetween(1, 10),
+                    'count' => $this->faker->numberBetween(1, 10),
                 ],
             ],
         ]);
@@ -65,5 +67,44 @@ final class OrderGoodsCest
                 ],
             ],
         ]));
+
+        // ✔ OrderGoodsCest: Order multiple products (0.03s)
+    }
+
+    public function orderMultipleProductsManyTimes(AcceptanceTester $I): void
+    {
+        $times = $this->faker->numberBetween(10, 50);
+
+        for ($i = 0; $i <= $times; $i++) {
+            $this->orderMultipleProducts($I);
+        }
+
+        // ✔ OrderGoodsCest: Order multiple products many times (1.11s)
+    }
+
+    public function order100Goods(AcceptanceTester $I): void
+    {
+        $body = [
+            'userId' => 1,
+        ];
+
+        for ($i = 1; $i <= 100; $i++) {
+            $body['goods'][] = [
+                'id' => $i,
+                'count' => $this->faker->numberBetween(1, 100),
+            ];
+        }
+
+        $I->sendPostAsJson('/api/order', $body);
+        $I->seeResponseCodeIs(201);
+        $I->seeResponseIsValidOnJsonSchemaString(json_encode([
+            'properties' => [
+                'id' => [
+                    'type' => 'integer',
+                ],
+            ],
+        ]));
+
+        // ✔ OrderGoodsCest: Order100 goods (0.07s)
     }
 }

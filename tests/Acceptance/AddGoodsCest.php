@@ -21,8 +21,8 @@ final class AddGoodsCest
     public function successAdd(AcceptanceTester $I): void
     {
         $title = $this->faker->word();
-        $price = $this->faker->randomFloat();
-        $count = $this->faker->numberBetween(1, 100);
+        $price = $this->faker->randomFloat(min: 1);
+        $count = $this->faker->numberBetween(500, 100000);
 
         $I->sendPostAsJson('/api/goods', [
             'title' => $title,
@@ -51,5 +51,12 @@ final class AddGoodsCest
         ]);
 
         $I->seeResponseCodeIs(Response::HTTP_BAD_REQUEST);
+    }
+
+    public function add100Goods(AcceptanceTester $I): void
+    {
+        for ($i = 0; $i < 100; $i++) {
+            $this->successAdd($I);
+        }
     }
 }
